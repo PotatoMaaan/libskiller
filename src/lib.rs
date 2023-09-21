@@ -97,12 +97,12 @@ impl SkillerProPlus {
                 timeout,
             }));
         }
-        Ok(None)
+        return Ok(None);
     }
 
     /// Sets the color of the keyboard for the given profile
     /// Returns the amount of bytes written or any libusb errors
-    pub fn set_color(&mut self, color: Color, profile: Profile) -> rusb::Result<usize> {
+    pub fn set_color(&self, color: Color, profile: Profile) -> rusb::Result<usize> {
         let p = profile.to_skiller_offset();
 
         let payload: [u8; 8] = [
@@ -118,12 +118,14 @@ impl SkillerProPlus {
 
         let mut total_written = 0;
 
-        total_written += self.skiller_write(&begin_command_profile(p))?;
-        total_written += self.skiller_write(&begin_handshake_profile(p))?;
+        total_written += self.skiller_write(&switch_profile_profile(p))?;
         total_written += self.skiller_write(&payload)?;
-        total_written += self.skiller_write(&footer())?;
 
-        Ok(total_written)
+        return Ok(total_written);
+    }
+
+    pub fn set_profile(&self, profile: Profile) -> rusb::Result<usize> {
+        Ok(self.skiller_write(&switch_profile_profile(profile.to_skiller_offset()))?)
     }
 
     /// Sets the brightness and color for the given profile.
@@ -131,7 +133,7 @@ impl SkillerProPlus {
     ///
     /// ## Note
     /// You have to provide the color as well because the keyboards API is weird
-    pub fn set_brightness(self, brightness: Brightness, profile: Profile) -> rusb::Result<usize> {
+    pub fn set_brightness(&self, brightness: Brightness, profile: Profile) -> rusb::Result<usize> {
         let p = profile.to_skiller_offset();
 
         let payload: [u8; 8] = match brightness {
@@ -160,11 +162,10 @@ impl SkillerProPlus {
 
         let mut total_written = 0;
 
-        total_written += self.skiller_write(&begin_command_profile(p))?;
-        total_written += self.skiller_write(&begin_handshake_profile(p))?;
+        total_written += self.skiller_write(&switch_profile_profile(p))?;
         total_written += self.skiller_write(&payload)?;
 
-        Ok(total_written)
+        return Ok(total_written);
     }
 
     fn skiller_write(&self, data: &[u8; 8]) -> rusb::Result<usize> {
@@ -173,11 +174,11 @@ impl SkillerProPlus {
         let written = self
             .handle
             .write_control(rt, 9, 0x0307, 1, data, self.timeout)?;
-        Ok(written)
+        return Ok(written);
     }
 }
 
-fn begin_command_profile(profile: u8) -> [u8; 8] {
+fn switch_profile_profile(profile: u8) -> [u8; 8] {
     [0x07, 0x02, profile, 0x00, 0x00, 0x00, 0x00, 0x00]
 }
 
@@ -185,6 +186,7 @@ fn begin_handshake_profile(profile: u8) -> [u8; 8] {
     [0x07, 0x0b, profile, 0x00, 0x00, 0x00, 0x00, 0x00]
 }
 
+// No idea what this does?
 fn footer() -> [u8; 8] {
     let mut cmd = [0; 8];
     cmd[0] = 0x07;
