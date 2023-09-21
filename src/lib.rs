@@ -124,6 +124,9 @@ impl SkillerProPlus {
         return Ok(total_written);
     }
 
+    /// Sets the profile of the keyboard
+    ///
+    /// Returns the amount of bytes written or any error returned by libusb
     pub fn set_profile(&self, profile: Profile) -> rusb::Result<usize> {
         Ok(self.skiller_write(&switch_profile_profile(profile.to_skiller_offset()))?)
     }
@@ -166,6 +169,21 @@ impl SkillerProPlus {
         total_written += self.skiller_write(&payload)?;
 
         return Ok(total_written);
+    }
+
+    /// Sets the windows key to be enabled or disabled
+    ///
+    /// Returns the amount of bytes written or any error returned by libusb
+    pub fn set_win_key(&self, enable: bool, profile: Profile) -> rusb::Result<usize> {
+        let p = profile.to_skiller_offset();
+        let enable = match enable {
+            true => 0,
+            false => 1,
+        };
+
+        let payload = [0x07, 0x0b, p, enable, 0x00, 0x00, 0x00, 0x00];
+
+        Ok(self.skiller_write(&payload)?)
     }
 
     fn skiller_write(&self, data: &[u8; 8]) -> rusb::Result<usize> {
