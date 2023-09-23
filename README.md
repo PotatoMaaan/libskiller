@@ -23,7 +23,7 @@ skiller
     .unwrap();
 ```
 
-For a more complete documentation experience, see [Documentation](###Documentation)
+For a more complete documentation experience, see [Documentation](#Documentation)
 
 ## Windows
 
