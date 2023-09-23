@@ -21,6 +21,24 @@ trait ToSkillerBytes {
 }
 
 /// A struct that can interact with the skiller pro plus keyboard
+///
+/// # Example
+/// ```
+/// use libskiller::{SkillerProPlus, Brightness, Color, Profile};
+/// use std::time::Duration;
+///
+/// let skiller = SkillerProPlus::new(Duration::from_secs(2))
+///     .unwrap() // unwrap() possible libusb errors, leaves Option<SkillerProPlus>
+///     .unwrap(); // If this is none, it means that no keyboard was found
+///
+/// skiller
+///     .set_color(Color::Red, Profile::P2)
+///     .unwrap();
+///
+/// skiller
+///     .set_brightness(Brightness::Pulsating {color: Color::Blue}, Profile::P3)
+///     .unwrap();
+/// ```
 #[derive(Debug, PartialEq, Eq)]
 pub struct SkillerProPlus {
     handle: DeviceHandle<rusb::Context>,
