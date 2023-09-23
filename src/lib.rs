@@ -139,6 +139,10 @@ impl SkillerProPlus {
     /// Creates a new SkillerProPlus struct with the given timeout.
     /// The returned result will be an error if any libusb operations failed,
     /// The nested Option indicates if the device is present on the USB bus
+    ///
+    /// ## Parameters
+    /// `timeout` specifies the usb timeout that is passed to libusb.
+    /// A sane value for this would be something like 2 seconds.
     pub fn new(timeout: Duration) -> rusb::Result<Option<Self>> {
         let context = Context::new()?;
         let devices = context.devices()?;
