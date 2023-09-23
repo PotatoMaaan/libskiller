@@ -1,6 +1,6 @@
 # libskiller
 
-A rust library to control the skiller pro+ keyboard.
+A rust library to control the skiller pro+ keyboard (currently linux only).
 
 > NOTE: This is unofficial software, use it at your own risk!
 
@@ -24,6 +24,10 @@ skiller
 ```
 
 For a more complete documentation experience, see [Documentation](###Documentation)
+
+## Windows
+
+`libusb` and `rusb` are supposed to work on windows, but i couln't get them to work. libusb keeps returning `NotSupported`, no matter what I do.
 
 ## Testing & docs
 
