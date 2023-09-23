@@ -1,6 +1,6 @@
 # libskiller
 
-#### A rust library to control the skiller pro+ keyboard.
+A rust library to control the skiller pro+ keyboard.
 
 > NOTE: This is unofficial software, use it at your own risk!
 
@@ -23,7 +23,7 @@ skiller
     .unwrap();
 ```
 
-For a more complete documentation experience, run `cargo doc --open`.
+For a more complete documentation experience, see [Documentation](###Documentation)
 
 ## Testing & docs
 
