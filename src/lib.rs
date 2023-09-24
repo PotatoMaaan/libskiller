@@ -162,12 +162,9 @@ impl SkillerProPlus {
                 handle.detach_kernel_driver(INTERFACE)?;
             }
 
-            return Ok(Some(SkillerProPlus {
-                handle: handle,
-                timeout,
-            }));
+            return Ok(Some(SkillerProPlus { handle, timeout }));
         }
-        return Ok(None);
+        Ok(None)
     }
 
     /// Sets the color of the keyboard for the given profile
@@ -191,14 +188,14 @@ impl SkillerProPlus {
         total_written += self.skiller_write(&switch_profile(p))?;
         total_written += self.skiller_write(&payload)?;
 
-        return Ok(total_written);
+        Ok(total_written)
     }
 
     /// Sets the profile of the keyboard
     ///
     /// Returns the amount of bytes written or any error returned by libusb
     pub fn set_profile(&self, profile: Profile) -> rusb::Result<usize> {
-        Ok(self.skiller_write(&switch_profile(profile.to_skiller_bytes()))?)
+        self.skiller_write(&switch_profile(profile.to_skiller_bytes()))
     }
 
     /// Sets the brightness and color for the given profile.
@@ -238,14 +235,14 @@ impl SkillerProPlus {
         total_written += self.skiller_write(&switch_profile(p))?;
         total_written += self.skiller_write(&payload)?;
 
-        return Ok(total_written);
+        Ok(total_written)
     }
 
     /// Sets the global polling rate of the keyboard.
     ///
     /// Returns the amount of bytes written or any error returned by libusb.
     pub fn set_polling_rate(&self, rate: PollingRate) -> rusb::Result<usize> {
-        Ok(self.skiller_write(&[
+        self.skiller_write(&[
             0x07,
             0x01,
             rate.to_skiller_bytes(),
@@ -254,7 +251,7 @@ impl SkillerProPlus {
             0x00,
             0x00,
             0x00,
-        ])?)
+        ])
     }
 
     /// Sets the windows key to be enabled or disabled
@@ -266,7 +263,7 @@ impl SkillerProPlus {
 
         let payload = [0x07, 0x0b, p, e, 0x00, 0x00, 0x00, 0x00];
 
-        Ok(self.skiller_write(&payload)?)
+        self.skiller_write(&payload)
     }
 
     /// Writes data to the keyboard
@@ -278,7 +275,8 @@ impl SkillerProPlus {
         let written = self
             .handle
             .write_control(rt, 9, 0x0307, 1, data, self.timeout)?;
-        return Ok(written);
+
+        Ok(written)
     }
 }
 
